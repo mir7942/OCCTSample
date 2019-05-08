@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <V3d_Viewer.hxx>
+#include <AIS_InteractiveContext.hxx>
 
 class COCCTSampleDoc : public CDocument
 {
@@ -13,7 +15,13 @@ protected: // serialization에서만 만들어집니다.
 	DECLARE_DYNCREATE(COCCTSampleDoc)
 
 // 특성입니다.
+private:
+	Handle(V3d_Viewer) m_viewer;
+	Handle(AIS_InteractiveContext) m_context;
+
 public:
+	Handle(AIS_InteractiveContext) GetContext(void) const { return m_context; }
+	Handle(V3d_Viewer) GetViewer(void) const { return m_viewer; }
 
 // 작업입니다.
 public:

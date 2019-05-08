@@ -8,7 +8,7 @@
 #endif
 
 #include "resource.h"       // 주 기호입니다.
-
+#include <Graphic3d_GraphicDriver.hxx>
 
 // COCCTSampleApp:
 // 이 클래스의 구현에 대해서는 OCCTSample.cpp을(를) 참조하세요.
@@ -19,6 +19,15 @@ class COCCTSampleApp : public CWinAppEx
 public:
 	COCCTSampleApp() noexcept;
 
+private:
+	Handle(Graphic3d_GraphicDriver) m_graphicDriver;
+
+public:
+	Handle(Graphic3d_GraphicDriver) GetGraphicDriver(void) const { return m_graphicDriver; }
+
+private:
+	// OCCT 초기화 함수
+	bool InitOCCT();
 
 // 재정의입니다.
 public:

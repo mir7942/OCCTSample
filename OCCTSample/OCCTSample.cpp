@@ -5,6 +5,10 @@
 #include "stdafx.h"
 #include "afxwinappex.h"
 #include "afxdialogex.h"
+
+#include <OSD.hxx>
+#include <OpenGl_GraphicDriver.hxx>
+
 #include "OCCTSample.h"
 #include "MainFrm.h"
 
@@ -12,10 +16,12 @@
 #include "OCCTSampleDoc.h"
 #include "OCCTSampleView.h"
 
+// OCCT에서 사용하기 위해서는 아래 부분을 주석처리 해야 함
+/*
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
+*/
 
 // COCCTSampleApp
 
@@ -73,6 +79,9 @@ BOOL COCCTSampleApp::InitInstance()
 
 	CWinAppEx::InitInstance();
 
+	// OCCT를 초기화 한다.
+	if (!InitOCCT())
+		return FALSE;
 
 	// OLE 라이브러리를 초기화합니다.
 	if (!AfxOleInit())
@@ -218,5 +227,25 @@ void COCCTSampleApp::SaveCustomState()
 
 // COCCTSampleApp 메시지 처리기
 
+bool COCCTSampleApp::InitOCCT()
+{
+	// 예외를 throw 하도록 설정
+	OSD::SetSignal(Standard_True);
 
+	bool result = false;
+
+	try
+	{
+		// 그래픽 드라이버 초기화 (OpenGL 기반)
+		Handle(Aspect_DisplayConnection) aDisplayConnection;
+		m_graphicDriver = new OpenGl_GraphicDriver(aDisplayConnection);
+		result = true;
+	}
+	catch (Standard_Failure)
+	{
+		result = false;
+	}
+
+	return result;
+}
 

@@ -59,6 +59,9 @@
     <ClCompile Include="OCCTSampleView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="OcctLib.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OCCTSample.rc">
