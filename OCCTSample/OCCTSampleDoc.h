@@ -20,11 +20,12 @@ private:
 	Handle(AIS_InteractiveContext) m_context;
 
 public:
-	Handle(AIS_InteractiveContext) GetContext(void) const { return m_context; }
-	Handle(V3d_Viewer) GetViewer(void) const { return m_viewer; }
+	Handle(AIS_InteractiveContext) GetContext() const { return m_context; }
+	Handle(V3d_Viewer) GetViewer() const { return m_viewer; }
 
 // 작업입니다.
-public:
+private:
+	void InitializeDocument();
 
 // 재정의입니다.
 public:
@@ -34,6 +35,8 @@ public:
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
 #endif // SHARED_HANDLERS
+	
+	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 
 // 구현입니다.
 public:
@@ -53,4 +56,7 @@ protected:
 	// 검색 처리기에 대한 검색 콘텐츠를 설정하는 도우미 함수
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
+	
+public:
+	afx_msg void OnFileImport();
 };

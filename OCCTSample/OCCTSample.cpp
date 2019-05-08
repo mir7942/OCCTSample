@@ -67,6 +67,10 @@ COCCTSampleApp theApp;
 
 BOOL COCCTSampleApp::InitInstance()
 {
+	// OCCT를 초기화 한다.
+	if (!InitOCCT())
+		return FALSE;
+
 	// 응용 프로그램 매니페스트가 ComCtl32.dll 버전 6 이상을 사용하여 비주얼 스타일을
 	// 사용하도록 지정하는 경우, Windows XP 상에서 반드시 InitCommonControlsEx()가 필요합니다. 
 	// InitCommonControlsEx()를 사용하지 않으면 창을 만들 수 없습니다.
@@ -77,11 +81,7 @@ BOOL COCCTSampleApp::InitInstance()
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
 
-	CWinAppEx::InitInstance();
-
-	// OCCT를 초기화 한다.
-	if (!InitOCCT())
-		return FALSE;
+	CWinAppEx::InitInstance();	
 
 	// OLE 라이브러리를 초기화합니다.
 	if (!AfxOleInit())
@@ -230,15 +230,15 @@ void COCCTSampleApp::SaveCustomState()
 bool COCCTSampleApp::InitOCCT()
 {
 	// 예외를 throw 하도록 설정
-	OSD::SetSignal(Standard_True);
+	//OSD::SetSignal(Standard_True);
 
 	bool result = false;
 
 	try
 	{
 		// 그래픽 드라이버 초기화 (OpenGL 기반)
-		Handle(Aspect_DisplayConnection) aDisplayConnection;
-		m_graphicDriver = new OpenGl_GraphicDriver(aDisplayConnection);
+		Handle(Aspect_DisplayConnection) displayConnection;
+		m_graphicDriver = new OpenGl_GraphicDriver(displayConnection);
 		result = true;
 	}
 	catch (Standard_Failure)

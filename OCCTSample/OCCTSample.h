@@ -23,7 +23,7 @@ private:
 	Handle(Graphic3d_GraphicDriver) m_graphicDriver;
 
 public:
-	Handle(Graphic3d_GraphicDriver) GetGraphicDriver(void) const { return m_graphicDriver; }
+	Handle(Graphic3d_GraphicDriver) GetGraphicDriver() const { return m_graphicDriver; }
 
 private:
 	// OCCT 초기화 함수

@@ -9,19 +9,26 @@
 #include "OCCTSample.h"
 #endif
 
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <AIS_Shape.hxx>
+
 #include "OCCTSampleDoc.h"
 
 #include <propkey.h>
 
+// OCCT에서 사용하기 위해서는 아래 부분을 주석처리 해야 함
+/*
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+*/
 
 // COCCTSampleDoc
 
 IMPLEMENT_DYNCREATE(COCCTSampleDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(COCCTSampleDoc, CDocument)
+	ON_COMMAND(ID_FILE_IMPORT, &COCCTSampleDoc::OnFileImport)
 END_MESSAGE_MAP()
 
 
@@ -37,6 +44,19 @@ COCCTSampleDoc::~COCCTSampleDoc()
 {
 }
 
+void COCCTSampleDoc::InitializeDocument()
+{
+	Handle(Graphic3d_GraphicDriver) graphicDriver = static_cast<COCCTSampleApp *>(AfxGetApp())->GetGraphicDriver();
+	
+	// Viewer를 생성하고, 광원을 기본으로 설정한다.
+	m_viewer = new V3d_Viewer(graphicDriver);
+	m_viewer->SetDefaultLights();
+	m_viewer->SetLightOn();
+
+	// AIS_InteractiveContext를 생성한다.
+	m_context = new AIS_InteractiveContext(m_viewer);
+}
+
 BOOL COCCTSampleDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
@@ -44,12 +64,27 @@ BOOL COCCTSampleDoc::OnNewDocument()
 
 	// TODO: 여기에 재초기화 코드를 추가합니다.
 	// SDI 문서는 이 문서를 다시 사용합니다.
+	InitializeDocument();
+
+	TopoDS_Shape shape = BRepPrimAPI_MakeCylinder(50.0, 200.0);
+	
+	Handle(AIS_Shape) aisShape = new AIS_Shape(shape);
+	aisShape->SetDisplayMode(AIS_Shaded);
+	GetContext()->Display(aisShape, true);
 
 	return TRUE;
 }
 
+BOOL COCCTSampleDoc::OnOpenDocument(LPCTSTR lpszPathName)
+{
+	if (!CDocument::OnOpenDocument(lpszPathName))
+		return FALSE;
 
+	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
+	InitializeDocument();
 
+	return TRUE;
+}
 
 // COCCTSampleDoc serialization
 
@@ -135,3 +170,19 @@ void COCCTSampleDoc::Dump(CDumpContext& dc) const
 
 
 // COCCTSampleDoc 명령
+
+void COCCTSampleDoc::OnFileImport()
+{
+	CString strFilter = _T("STEP 파일 (*.stp)|*.stp|IGES 파일 (*.igs)|*.igs||");
+
+	CFileDialog dialog(TRUE, _T("*.stp"), 0, OFN_HIDEREADONLY, strFilter);
+
+	if (IDOK == dialog.DoModal())
+	{
+		CString extension = dialog.GetFileExt();
+		if (extension == _T("stp"))
+		{
+
+		}
+	}
+}
