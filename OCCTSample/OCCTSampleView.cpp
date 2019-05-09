@@ -54,7 +54,15 @@ BEGIN_MESSAGE_MAP(COCCTSampleView, CView)
 	ON_COMMAND(ID_VIEW_PAN, &COCCTSampleView::OnViewPan)
 	ON_COMMAND(ID_VIEW_ZOOM, &COCCTSampleView::OnViewZoom)
 	ON_COMMAND(ID_VIEW_ZOOM_WINDOW, &COCCTSampleView::OnViewZoomWindow)
+	ON_COMMAND(ID_VIEW_ZOOM_ALL, &COCCTSampleView::OnViewZoomAll)
 	ON_COMMAND(ID_SELECT, &COCCTSampleView::OnSelect)
+	ON_COMMAND(ID_VIEW_DEFAULT, &COCCTSampleView::OnViewDefault)
+	ON_COMMAND(ID_VIEW_FRONT, &COCCTSampleView::OnViewFront)
+	ON_COMMAND(ID_VIEW_BACK, &COCCTSampleView::OnViewBack)
+	ON_COMMAND(ID_VIEW_LEFT, &COCCTSampleView::OnViewLeft)
+	ON_COMMAND(ID_VIEW_RIGHT, &COCCTSampleView::OnViewRight)
+	ON_COMMAND(ID_VIEW_TOP, &COCCTSampleView::OnViewTop)
+	ON_COMMAND(ID_VIEW_BOTTOM, &COCCTSampleView::OnViewBottom)
 END_MESSAGE_MAP()
 
 // COCCTSampleView 생성/소멸
@@ -188,12 +196,6 @@ void COCCTSampleView::OnSize(UINT nType, int cx, int cy)
 		m_view->MustBeResized();
 }
 
-void COCCTSampleView::FitAll()
-{
-	m_view->FitAll();
-	m_view->ZFitAll();
-}
-
 void COCCTSampleView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	GetOperator()->OnLButtonDblClk(this, nFlags, point);
@@ -279,7 +281,50 @@ void COCCTSampleView::OnViewZoomWindow()
 	SetOperator(new ZoomWindowOperator());
 }
 
+void COCCTSampleView::OnViewZoomAll()
+{
+	m_view->FitAll();
+	m_view->ZFitAll();	
+}
+
 void COCCTSampleView::OnSelect()
 {
 	SetOperator(new SelectionOperator());
+}
+
+void COCCTSampleView::OnViewDefault()
+{
+	m_view->Reset();
+	m_view->FitAll();
+	m_view->ZFitAll();
+}
+
+void COCCTSampleView::OnViewFront()
+{
+	m_view->SetProj(V3d_Xpos);
+}
+
+void COCCTSampleView::OnViewBack()
+{
+	m_view->SetProj(V3d_Xneg);
+}
+
+void COCCTSampleView::OnViewLeft()
+{
+	m_view->SetProj(V3d_Yneg);
+}
+
+void COCCTSampleView::OnViewRight()
+{
+	m_view->SetProj(V3d_Ypos);
+}
+
+void COCCTSampleView::OnViewTop()
+{
+	m_view->SetProj(V3d_Zpos);
+}
+
+void COCCTSampleView::OnViewBottom()
+{
+	m_view->SetProj(V3d_Zneg);
 }

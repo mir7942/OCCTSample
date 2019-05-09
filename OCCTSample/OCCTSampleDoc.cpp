@@ -12,6 +12,8 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <AIS_Shape.hxx>
 
+#include "StepReader.h"
+#include "IgesReader.h"
 #include "OCCTSampleDoc.h"
 
 #include <propkey.h>
@@ -173,16 +175,31 @@ void COCCTSampleDoc::Dump(CDumpContext& dc) const
 
 void COCCTSampleDoc::OnFileImport()
 {
-	CString strFilter = _T("STEP 파일 (*.stp)|*.stp|IGES 파일 (*.igs)|*.igs||");
+	CString strFilter = _T("STEP 파일 (*.stp)|*.stp|IGES 파일 (*.igs, *.iges)|*.igs;*.iges||");
 
 	CFileDialog dialog(TRUE, _T("*.stp"), 0, OFN_HIDEREADONLY, strFilter);
 
 	if (IDOK == dialog.DoModal())
 	{
+		TopoDS_Shape shape;
+
 		CString extension = dialog.GetFileExt();
 		if (extension == _T("stp"))
+		{			
+			StepReader reader;
+			reader.Read(dialog.GetPathName(), shape);
+		}
+		else if (extension == _T("igs") || extension == _T("iges"))
 		{
+			IgesReader reader;
+			reader.Read(dialog.GetPathName(), shape);
+		}
 
+		if (!shape.IsNull())
+		{
+			Handle(AIS_Shape) aisShape = new AIS_Shape(shape);
+			aisShape->SetDisplayMode(AIS_Shaded);
+			GetContext()->Display(aisShape, true);
 		}
 	}
 }

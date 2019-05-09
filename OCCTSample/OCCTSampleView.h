@@ -78,7 +78,16 @@ public:
 	afx_msg void OnViewPan();
 	afx_msg void OnViewZoom();
 	afx_msg void OnViewZoomWindow();
+	afx_msg void OnViewZoomAll();
 	afx_msg void OnSelect();
+
+	afx_msg void OnViewDefault();
+	afx_msg void OnViewFront();
+	afx_msg void OnViewBack();
+	afx_msg void OnViewLeft();
+	afx_msg void OnViewRight();
+	afx_msg void OnViewTop();
+	afx_msg void OnViewBottom();
 };
 
 #ifndef _DEBUG  // OCCTSampleView.cpp의 디버그 버전
