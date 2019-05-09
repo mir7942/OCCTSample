@@ -68,9 +68,7 @@ END_MESSAGE_MAP()
 // COCCTSampleView 생성/소멸
 
 COCCTSampleView::COCCTSampleView() noexcept
-	: m_width(0)
-	, m_height(0)
-	, m_pOperator(nullptr)
+	: m_pOperator(nullptr)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
 

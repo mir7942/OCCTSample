@@ -6,7 +6,6 @@
 #include "afxwinappex.h"
 #include "afxdialogex.h"
 
-#include <OSD.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 
 #include "OCCTSample.h"
@@ -229,9 +228,6 @@ void COCCTSampleApp::SaveCustomState()
 
 bool COCCTSampleApp::InitOCCT()
 {
-	// 예외를 throw 하도록 설정
-	//OSD::SetSignal(Standard_True);
-
 	bool result = false;
 
 	try

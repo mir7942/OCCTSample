@@ -18,8 +18,6 @@ protected: // serialization에서만 만들어집니다.
 // 특성입니다.
 private:
 	Handle(V3d_View) m_view;
-	int m_width;
-	int m_height;
 
 	OperatorBase * m_pOperator;
 

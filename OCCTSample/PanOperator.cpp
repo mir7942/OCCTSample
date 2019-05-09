@@ -32,9 +32,10 @@ void PanOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint point
 		OperatorBase::OnMouseMove(pView, nFlags, point);
 	else
 	{
+		// 이동량을 계산한다.
 		int deltaX = point.x - m_oldX;
 		int deltaY = m_oldY - point.y;
-
+		// 카메라를 이동시킨다.
 		pView->GetView()->Pan(deltaX, deltaY);
 
 		m_oldX = point.x;

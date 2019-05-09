@@ -32,6 +32,7 @@ void ZoomOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint poin
 		OperatorBase::OnMouseMove(pView, nFlags, point);
 	else
 	{
+		// 화면을 확대/축소시킨다.
 		pView->GetView()->Zoom(point.y, m_oldX, m_oldY, point.x);
 
 		m_oldX = point.x;

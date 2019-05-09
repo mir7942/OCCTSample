@@ -34,10 +34,12 @@ void SelectionOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint
 
 	if (abs(point.x - m_oldX) > MinimumSize && abs(point.y - m_oldY) > MinimumSize)
 	{
+		// 마우스로 선택한 영역이 크면 영역 선택을 한다.
 		context->Select(m_oldX, m_oldY, point.x, point.y, pView->GetView(), true);
 	}
 	else
 	{
+		// 마우스로 선택한 영역이 작으면 현재 위치를 선택한다.
 		context->Select(true);
 	}	
 
@@ -47,6 +49,7 @@ void SelectionOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint
 void SelectionOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint point)
 {
 	Handle(AIS_InteractiveContext) context = pView->GetDocument()->GetContext();
+	// 이동한 마우스 위치를 반영한다.
 	context->MoveTo(point.x, point.y, pView->GetView(), true);
 
 	if (!m_isStarted)

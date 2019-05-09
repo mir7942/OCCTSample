@@ -29,6 +29,7 @@ void ZoomWindowOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoin
 	const int ValZWMin = 1;
 
 	DrawRectangle(pView, m_oldX, m_oldY, point.x, point.y, false);
+	// 지정한 영역에 맞게 확대한다.
 	pView->GetView()->WindowFitAll(m_oldX, m_oldY, point.x, point.y);
 
 	m_isStarted = false;

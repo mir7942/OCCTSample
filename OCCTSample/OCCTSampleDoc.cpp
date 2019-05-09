@@ -68,8 +68,10 @@ BOOL COCCTSampleDoc::OnNewDocument()
 	// SDI 문서는 이 문서를 다시 사용합니다.
 	InitializeDocument();
 
+	// 실린더 형상 생성
 	TopoDS_Shape shape = BRepPrimAPI_MakeCylinder(50.0, 200.0);
 	
+	// 실린더 가시화
 	Handle(AIS_Shape) aisShape = new AIS_Shape(shape);
 	aisShape->SetDisplayMode(AIS_Shaded);
 	GetContext()->Display(aisShape, true);
