@@ -1,6 +1,8 @@
 #include "stdafx.h"
+
 #include <V3d_View.hxx>
 #include <AIS_InteractiveContext.hxx>
+
 #include "OCCTSampleDoc.h"
 #include "OCCTSampleView.h"
 #include "SelectionOperator.h"
@@ -17,14 +19,14 @@ SelectionOperator::~SelectionOperator()
 {
 }
 
-void SelectionOperator::OnLButtonDown(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void SelectionOperator::OnLButtonDown(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	m_isStarted = true;
 	m_oldX = point.x;
 	m_oldY = point.y;
 }
 
-void SelectionOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void SelectionOperator::OnLButtonUp(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	const int MinimumSize = 2;
 
@@ -34,19 +36,36 @@ void SelectionOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint
 
 	if (abs(point.x - m_oldX) > MinimumSize && abs(point.y - m_oldY) > MinimumSize)
 	{
-		// 마우스로 선택한 영역이 크면 영역 선택을 한다.
-		context->Select(m_oldX, m_oldY, point.x, point.y, pView->GetView(), true);
+		if ((nFlags & MK_CONTROL) || (nFlags & MK_SHIFT))
+		{
+			// 마우스로 선택한 영역이 크면 영역 선택을 한다.
+			context->ShiftSelect(m_oldX, m_oldY, point.x, point.y, pView->GetView(), true);
+		}
+		else
+		{
+			// 마우스로 선택한 영역이 크면 영역 선택을 한다.
+			context->Select(m_oldX, m_oldY, point.x, point.y, pView->GetView(), true);
+		}
+		
 	}
 	else
 	{
-		// 마우스로 선택한 영역이 작으면 현재 위치를 선택한다.
-		context->Select(true);
-	}	
+		if ((nFlags & MK_CONTROL) || (nFlags & MK_SHIFT))
+		{
+			// 마우스로 선택한 영역이 작으면 현재 위치를 선택한다.
+			context->ShiftSelect(true);
+		}
+		else
+		{
+			// 마우스로 선택한 영역이 작으면 현재 위치를 선택한다.
+			context->Select(true);
+		}		
+	}
 
 	m_isStarted = false;
 }
 
-void SelectionOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void SelectionOperator::OnMouseMove(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	Handle(AIS_InteractiveContext) context = pView->GetDocument()->GetContext();
 	// 이동한 마우스 위치를 반영한다.
@@ -60,7 +79,7 @@ void SelectionOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint
 	}
 }
 
-void SelectionOperator::DrawRectangle(COCCTSampleView * pView, int minX, int minY, int maxX, int maxY, bool toDraw)
+void SelectionOperator::DrawRectangle(COCCTSampleView* pView, int minX, int minY, int maxX, int maxY, bool toDraw)
 {
 	Handle(AIS_InteractiveContext) context = pView->GetDocument()->GetContext();
 

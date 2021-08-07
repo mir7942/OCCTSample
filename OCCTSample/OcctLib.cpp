@@ -14,3 +14,4 @@
 #pragma comment(lib, "TKSTEP.lib")
 #pragma comment(lib, "TKSTEPAttr.lib")
 #pragma comment(lib, "TKSTEP209.lib")
+#pragma comment(lib, "TKBO.lib")

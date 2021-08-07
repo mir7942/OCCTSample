@@ -32,6 +32,7 @@ bool IgesReader::Read(const CString & fileName, TopoDS_Shape & shape)
 		{
 			// 읽은 형상이 한 개 이상이면 한 개의 형상으로 합쳐 가져온다.
 			shape = reader.OneShape();
+
 			return true;
 		}
 	}

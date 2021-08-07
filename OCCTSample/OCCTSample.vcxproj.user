@@ -9,11 +9,11 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerEnvironment>PATH=$(CASROOT_730)\win64\vc141\bind</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>PATH=$(CASROOT_750)\win64\vc14\bind</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerEnvironment>PATH=$(CASROOT_730)\win64\vc141\bin</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>PATH=$(CASROOT_750)\win64\vc14\bin</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup>

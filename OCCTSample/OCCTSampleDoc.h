@@ -26,6 +26,8 @@ public:
 // 작업입니다.
 private:
 	void InitializeDocument();
+	int GetFileCount(const CString& path) const;
+	std::vector<Handle(AIS_InteractiveObject)> GetSelectedObjects() const;
 
 // 재정의입니다.
 public:
@@ -59,4 +61,8 @@ protected:
 	
 public:
 	afx_msg void OnFileImport();
+	afx_msg void OnFileImportFolder();
+	afx_msg void OnEditClear();
+	afx_msg void OnEditClearAll();
+	afx_msg void OnBooleanUnion();
 };

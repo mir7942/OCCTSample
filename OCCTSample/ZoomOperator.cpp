@@ -1,5 +1,7 @@
 #include "stdafx.h"
+
 #include <V3d_View.hxx>
+
 #include "OCCTSampleView.h"
 #include "ZoomOperator.h"
 
@@ -14,19 +16,19 @@ ZoomOperator::~ZoomOperator()
 {
 }
 
-void ZoomOperator::OnLButtonDown(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void ZoomOperator::OnLButtonDown(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	m_isStarted = true;
 	m_oldX = point.x;
 	m_oldY = point.y;
 }
 
-void ZoomOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void ZoomOperator::OnLButtonUp(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	m_isStarted = false;
 }
 
-void ZoomOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void ZoomOperator::OnMouseMove(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	if (!m_isStarted)
 		OperatorBase::OnMouseMove(pView, nFlags, point);

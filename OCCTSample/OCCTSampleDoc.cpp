@@ -9,11 +9,17 @@
 #include "OCCTSample.h"
 #endif
 
-#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <sstream>
+
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
+
+#include <BOPAlgo_Builder.hxx>
 
 #include "StepReader.h"
 #include "IgesReader.h"
+#include "MainFrm.h"
 #include "OCCTSampleDoc.h"
 
 #include <propkey.h>
@@ -31,6 +37,10 @@ IMPLEMENT_DYNCREATE(COCCTSampleDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(COCCTSampleDoc, CDocument)
 	ON_COMMAND(ID_FILE_IMPORT, &COCCTSampleDoc::OnFileImport)
+	ON_COMMAND(ID_FILE_IMPORT_FOLDER, &COCCTSampleDoc::OnFileImportFolder)
+	ON_COMMAND(ID_EDIT_CLEAR, &COCCTSampleDoc::OnEditClear)
+	ON_COMMAND(ID_EDIT_CLEAR_ALL, &COCCTSampleDoc::OnEditClearAll)
+	ON_COMMAND(ID_BOOLEAN_UNION, &COCCTSampleDoc::OnBooleanUnion)
 END_MESSAGE_MAP()
 
 
@@ -54,9 +64,12 @@ void COCCTSampleDoc::InitializeDocument()
 	m_viewer = new V3d_Viewer(graphicDriver);
 	m_viewer->SetDefaultLights();
 	m_viewer->SetLightOn();
+	m_viewer->SetDefaultBgGradientColors(Quantity_Color(0.0, 0.5, 0.5, Quantity_TOC_RGB), Quantity_Color(1.0, 0.98, 0.98, Quantity_TOC_RGB), Aspect_GFM_VER);
+	m_viewer->SetDefaultTypeOfView(V3d_ORTHOGRAPHIC);
 
 	// AIS_InteractiveContext를 생성한다.
 	m_context = new AIS_InteractiveContext(m_viewer);
+	m_context->DefaultDrawer()->SetFaceBoundaryDraw(true);
 }
 
 BOOL COCCTSampleDoc::OnNewDocument()
@@ -66,15 +79,7 @@ BOOL COCCTSampleDoc::OnNewDocument()
 
 	// TODO: 여기에 재초기화 코드를 추가합니다.
 	// SDI 문서는 이 문서를 다시 사용합니다.
-	InitializeDocument();
-
-	// 실린더 형상 생성
-	TopoDS_Shape shape = BRepPrimAPI_MakeCylinder(50.0, 200.0);
-	
-	// 실린더 가시화
-	Handle(AIS_Shape) aisShape = new AIS_Shape(shape);
-	aisShape->SetDisplayMode(AIS_Shaded);
-	GetContext()->Display(aisShape, true);
+	InitializeDocument();	
 
 	return TRUE;
 }
@@ -186,6 +191,8 @@ void COCCTSampleDoc::OnFileImport()
 		TopoDS_Shape shape;
 
 		CString extension = dialog.GetFileExt();
+		extension.MakeLower();
+
 		if (extension == _T("stp"))
 		{			
 			StepReader reader;
@@ -204,4 +211,177 @@ void COCCTSampleDoc::OnFileImport()
 			GetContext()->Display(aisShape, true);
 		}
 	}
+}
+
+int COCCTSampleDoc::GetFileCount(const CString& path) const
+{
+	CFileFind finder;
+	BOOL find = finder.FindFile(path);
+
+	int count = 0;
+
+	while (find)
+	{
+		find = finder.FindNextFile();		
+		if (finder.IsDirectory() || finder.IsDots())
+			continue;
+
+		++count;
+	}
+
+	finder.Close();
+
+	return count;
+}
+
+void COCCTSampleDoc::OnFileImportFolder()
+{
+	CFolderPickerDialog dialog;
+
+	if (IDOK == dialog.DoModal())
+	{
+		CWaitCursor wait;
+
+		CString path = dialog.GetPathName();
+		
+		int total = GetFileCount(path + _T("\\*.*"));
+
+		CFileFind finder;
+		BOOL find = finder.FindFile(path + _T("\\*.*"));
+
+		int count = 0;
+
+		while (find)
+		{
+			find = finder.FindNextFile();
+			CString filePath = finder.GetFilePath();
+			if (finder.IsDirectory() || finder.IsDots())
+				continue;
+
+			int index = filePath.ReverseFind(_T('.'));
+			if (index >= 0)
+			{
+				TopoDS_Shape shape;
+
+				CString extension = filePath.Right(filePath.GetLength() - index - 1);
+				extension.MakeLower();
+
+				if (extension == _T("stp"))
+				{
+					StepReader reader;
+					reader.Read(filePath, shape);
+				}
+				else if (extension == _T("igs") || extension == _T("iges"))
+				{
+					IgesReader reader;
+					reader.Read(filePath, shape);
+				}
+
+				if (!shape.IsNull())
+				{
+					Handle(AIS_Shape) aisShape = new AIS_Shape(shape);
+					aisShape->SetDisplayMode(AIS_Shaded);
+					GetContext()->Display(aisShape, false);
+
+					++count;
+					
+					CString progresMessage;
+					progresMessage.Format(_T("%d/%d Done"), count, total);
+
+					CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+					pMainFrame->SetStatusText(progresMessage);
+				}
+			}
+		}
+
+		finder.Close();
+
+		GetContext()->UpdateCurrentViewer();		
+	}
+}
+
+std::vector<Handle(AIS_InteractiveObject)> COCCTSampleDoc::GetSelectedObjects() const
+{
+	std::vector<Handle(AIS_InteractiveObject)> selectedObjects;
+
+	GetContext()->InitSelected();
+	while (GetContext()->MoreSelected())
+	{
+		Handle(AIS_InteractiveObject) selectedObject = GetContext()->SelectedInteractive();
+		selectedObjects.push_back(selectedObject);
+
+		GetContext()->NextSelected();
+	}
+
+	return selectedObjects;
+}
+
+void COCCTSampleDoc::OnEditClear()
+{
+	std::vector<Handle(AIS_InteractiveObject)> selectedObjects = GetSelectedObjects();	
+
+	for (auto object : selectedObjects)
+	{
+		GetContext()->Remove(object, false);
+	}
+
+	GetContext()->UpdateCurrentViewer();
+}
+
+void COCCTSampleDoc::OnEditClearAll()
+{
+	GetContext()->RemoveAll(true);
+}
+
+void COCCTSampleDoc::OnBooleanUnion()
+{
+	CWaitCursor wait;
+
+	std::vector<Handle(AIS_InteractiveObject)> selectedObjects = GetSelectedObjects();
+
+	BOPAlgo_Builder builder;
+
+	TopTools_ListOfShape arguments;
+	for (auto aisObject : selectedObjects)
+	{
+		if (auto aisShape = Handle(AIS_Shape)::DownCast(aisObject))
+		{
+			arguments.Append(aisShape->Shape());
+		}
+	}
+
+	builder.SetArguments(arguments);
+	builder.SetRunParallel(Standard_True);
+	builder.SetGlue(BOPAlgo_GlueShift);
+	builder.SetUseOBB(Standard_True);
+
+	// Perform the operation
+	builder.Perform();
+
+	std::stringstream ss;
+
+	// Check for the errors
+	if (builder.HasErrors())
+	{
+		builder.DumpErrors(ss);
+		TRACE(ss.str().c_str());
+		return;
+	}
+
+	// Check for the warnings
+	if (builder.HasWarnings())
+	{
+		// treatment of the warnings
+		builder.DumpWarnings(ss);
+		TRACE(ss.str().c_str());
+	}
+
+	// result of the operation
+	const TopoDS_Shape& resultShape = builder.Shape();
+
+	OnEditClear();
+
+	Handle(AIS_Shape) aisShape = new AIS_Shape(resultShape);
+	aisShape->SetDisplayMode(AIS_Shaded);
+	GetContext()->Display(aisShape, true);
 }

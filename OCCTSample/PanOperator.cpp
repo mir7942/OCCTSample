@@ -1,5 +1,7 @@
 #include "stdafx.h"
+
 #include <V3d_View.hxx>
+
 #include "OCCTSampleView.h"
 #include "PanOperator.h"
 
@@ -9,24 +11,23 @@ PanOperator::PanOperator()
 {
 }
 
-
 PanOperator::~PanOperator()
 {
 }
 
-void PanOperator::OnLButtonDown(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void PanOperator::OnLButtonDown(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	m_isStarted = true;
 	m_oldX = point.x;
 	m_oldY = point.y;
 }
 
-void PanOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void PanOperator::OnLButtonUp(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	m_isStarted = false;
 }
 
-void PanOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void PanOperator::OnMouseMove(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	if (!m_isStarted)
 		OperatorBase::OnMouseMove(pView, nFlags, point);

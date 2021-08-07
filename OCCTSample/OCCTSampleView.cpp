@@ -18,6 +18,7 @@
 #include "ZoomOperator.h"
 #include "ZoomWindowOperator.h"
 #include "SelectionOperator.h"
+#include "DynamicSelectionOperator.h"
 #include "OCCTSampleDoc.h"
 #include "OCCTSampleView.h"
 
@@ -183,7 +184,7 @@ void COCCTSampleView::OnInitialUpdate()
 	m_view->ZBufferTriedronSetup();
 	m_view->TriedronDisplay(Aspect_TOTP_LEFT_LOWER, Quantity_NOC_BLACK, 0.07, V3d_ZBUFFER);
 
-	SetOperator(new RotationOperator());
+	SetOperator(new DynamicSelectionOperator());
 }
 
 void COCCTSampleView::OnSize(UINT nType, int cx, int cy)

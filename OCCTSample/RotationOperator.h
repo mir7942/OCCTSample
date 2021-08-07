@@ -6,11 +6,11 @@ class RotationOperator : public OperatorBase
 {
 public:
 	RotationOperator();
-	~RotationOperator();
+	~RotationOperator() override;
 
-	virtual void OnLButtonDown(COCCTSampleView * pView, UINT nFlags, CPoint point) override;
-	virtual void OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint point) override;
-	virtual void OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint point) override;
+	void OnLButtonDown(COCCTSampleView* pView, UINT nFlags, CPoint point) override;
+	void OnLButtonUp(COCCTSampleView* pView, UINT nFlags, CPoint point) override;
+	void OnMouseMove(COCCTSampleView* pView, UINT nFlags, CPoint point) override;
 
 private:
 	bool m_isStarted;

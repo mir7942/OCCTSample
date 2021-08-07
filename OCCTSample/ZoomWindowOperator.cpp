@@ -1,6 +1,8 @@
 #include "stdafx.h"
+
 #include <V3d_View.hxx>
 #include <AIS_InteractiveContext.hxx>
+
 #include "OCCTSampleDoc.h"
 #include "OCCTSampleView.h"
 #include "ZoomWindowOperator.h"
@@ -17,14 +19,14 @@ ZoomWindowOperator::~ZoomWindowOperator()
 {
 }
 
-void ZoomWindowOperator::OnLButtonDown(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void ZoomWindowOperator::OnLButtonDown(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	m_isStarted = true;
 	m_oldX = point.x;
 	m_oldY = point.y;
 }
 
-void ZoomWindowOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void ZoomWindowOperator::OnLButtonUp(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	const int ValZWMin = 1;
 
@@ -35,7 +37,7 @@ void ZoomWindowOperator::OnLButtonUp(COCCTSampleView * pView, UINT nFlags, CPoin
 	m_isStarted = false;
 }
 
-void ZoomWindowOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoint point)
+void ZoomWindowOperator::OnMouseMove(COCCTSampleView* pView, UINT nFlags, CPoint point)
 {
 	if (!m_isStarted)
 		OperatorBase::OnMouseMove(pView, nFlags, point);
@@ -45,7 +47,7 @@ void ZoomWindowOperator::OnMouseMove(COCCTSampleView * pView, UINT nFlags, CPoin
 	}
 }
 
-void ZoomWindowOperator::DrawRectangle(COCCTSampleView * pView, int minX, int minY, int maxX, int maxY, bool toDraw)
+void ZoomWindowOperator::DrawRectangle(COCCTSampleView* pView, int minX, int minY, int maxX, int maxY, bool toDraw)
 {
 	Handle(AIS_InteractiveContext) context = pView->GetDocument()->GetContext();
 

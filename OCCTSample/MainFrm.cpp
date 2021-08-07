@@ -272,3 +272,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 	return TRUE;
 }
 
+void CMainFrame::SetStatusText(const CString& strMessage)
+{
+	m_wndStatusBar.SetPaneText(0, strMessage);
+}
